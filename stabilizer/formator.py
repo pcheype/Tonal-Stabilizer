@@ -6,10 +6,9 @@ from PySide6.QtCore import QThread, Signal
 class FormatorProcessor(QThread):
     """
     Génère une comparaison diagonale entre deux vidéos.
-    Supporte le threading et la séparation calcul/écriture pour PySide6.
     """
-    progress_update = Signal(int)
-    finished_signal = Signal(bool, str)
+    progress_update = Signal(int) #Signal pour UI
+    finished_signal = Signal(bool, str) # Signal pour UI
 
     def __init__(self, video_orig, video_stab, resize_to=None, diag="\\"):
         super().__init__()
@@ -23,7 +22,7 @@ class FormatorProcessor(QThread):
         self.final_size = (0, 0)
 
     def run(self):
-        """Exécution du calcul en arrière-plan"""
+        """Exécution du calcul en arrière-plan avec le QThread"""
         try:
             self.processed_frames = [] 
             self.generate_composite_frames()
@@ -32,6 +31,7 @@ class FormatorProcessor(QThread):
             self.finished_signal.emit(False, str(e))
 
     def generate_composite_frames(self):
+        """Methode permettant de générer les frames avec les deux videos"""
         cap_o = cv2.VideoCapture(self.video_orig)
         cap_s = cv2.VideoCapture(self.video_stab)
 
@@ -58,7 +58,7 @@ class FormatorProcessor(QThread):
             
             combined = self.draw_labels(combined)
             cv2.putText(combined, f"Frame {frame_idx}", (20, 60),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2) #Ajout du numero des frames
 
             self.processed_frames.append(combined)
             
@@ -71,9 +71,10 @@ class FormatorProcessor(QThread):
             self.final_size = (w, h)
 
         cap_o.release()
-        cap_s.release()
+        cap_s.release() #Release la video
 
     def ensure_same_size(self, a, b, resize_to=None):
+        """Methode pour s'assurer que les videos ont la même taille"""
         if resize_to is not None:
             a = cv2.resize(a, resize_to, interpolation=cv2.INTER_AREA)
             b = cv2.resize(b, resize_to, interpolation=cv2.INTER_AREA)
@@ -83,6 +84,7 @@ class FormatorProcessor(QThread):
         return a[:h, :w], b[:h, :w]
 
     def diagonal_composite(self, orig_bgr, stab_bgr, diag="\\", line_thickness=2):
+        """Rajoute la diagonale"""
         h, w = orig_bgr.shape[:2]
         yy, xx = np.indices((h, w), dtype=np.float32)
         m = (h - 1) / max((w - 1), 1)
@@ -100,6 +102,7 @@ class FormatorProcessor(QThread):
         return out
 
     def draw_labels(self, frame, labels=("Original", "Stabilized")):
+        """Permet d'écrire les labels (Original, Stabilized)"""
         h, w = frame.shape[:2]
         font = cv2.FONT_HERSHEY_SIMPLEX
         font_scale = max(0.6, w / 1200)

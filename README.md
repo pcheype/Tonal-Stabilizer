@@ -1,159 +1,101 @@
 # Tonal Stabilizer
 
-Une application GUI pour stabilisation tonale de vidéos et d'images.
+Application GUI pour la stabilisation tonale de vidéos et de séquences d’images.
 
 ## Description
 
-Tonal Stabilizer est un outil conçu pour améliorer la qualité des vidéos en stabilisant les variations tonales. L'application offre une interface utilisateur intuitive basée sur PySide6 et utilise OpenCV et NumPy pour les traitements vidéo.
+Tonal Stabilizer est un outil conçu pour réduire les fluctuations tonales dans les vidéos.  
+Il propose une interface graphique intuitive basée sur **PySide6** et utilise **OpenCV** et **NumPy** pour le traitement d’images.
 
-### Fonctionnalités
+## Fonctionnalités
 
-- **Importation vidéo** : Supporte les fichiers MP4 et les dossiers d'images
-- **Traitement tonal** : Stabilisation paramétrable avec contrôles de régularisation, recouvrement et sigma
-- **Visualisation** : Prévisualisation des vidéos originales et traitées
-- **Comparaison** : Génération de vidéos de comparaison diagonale
-- **Exportation** : Sauvegarde des résultats au format MP4
+- **Importation vidéo** : support des fichiers MP4 et des dossiers d’images  
+- **Traitement tonal** : stabilisation paramétrable avec :
+  - λ (lambda) – facteur de régularisation  
+  - ω (omega) – paramètre de recouvrement  
+  - σ (sigma)
+- **Prévisualisation** : affichage des vidéos originales et traitées  
+- **Export de comparaison** : génération de vidéos de comparaison diagonale  
+- **Exportation** : sauvegarde des vidéos stabilisées au format MP4
 
-## Installation
+---
 
-### 1. Prérequis
+# Installation
 
-- Python 3.8 ou supérieur
-- pip
+Ce projet utilise **uv** pour la gestion des dépendances.
 
-### 2. Cloner ou télécharger le projet
-
-```bash
-cd "Chemin\vers\Tonal Stabilizer"
-```
-
-### 3. Créer et activer l'environnement virtuel
-
-#### PowerShell (Windows)
-```powershell
-python -m venv .venv
-. .\.venv\Scripts\Activate.ps1
-```
-
-#### CMD (Windows)
-```cmd
-python -m venv .venv
-.venv\Scripts\activate
-```
-
-#### Linux/macOS
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-### 4. Installer les dépendances
-
-#### Option A : Installer depuis `pyproject.toml` (recommandé)
-```bash
-pip install --upgrade pip
-pip install -e .
-```
-
-#### Option B : Installer depuis `requirements.txt`
-```bash
-pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-## Utilisation
-
-### Lancer l'application
+### 1. Cloner le dépôt
 
 ```bash
-stabilizer
+git clone https://github.com/pcheype/Tonal-Stabilizer.git
+cd Tonal-Stabilizer
 ```
 
-Ou directement avec Python :
+### 2. Lancer l’application
+
 ```bash
-python -m stabilizer.mainwindow
+uv run python -m stabilizer
 ```
 
-### Étapes d'utilisation
+`uv` créera automatiquement l’environnement et installera toutes les dépendances nécessaires.
 
-1. **Étape 1 : Importation**
-   - Sélectionnez une vidéo MP4 ou un dossier d'images
-   - Prévisualisez votre vidéo
+---
 
-2. **Étape 2 : Processing**
-   - Ajustez les paramètres :
-     - **Λ (Lambda)** : Facteur de régularisation (défaut : 0.9)
-     - **ω (Omega)** : Paramètre de recouvrement (défaut : 0.7)
-     - **σ (Sigma)** : Sigma (défaut : 0.1)
-   - Cliquez sur "Start Processing"
+# Utilisation
 
-3. **Étape 3 : Exportation**
-   - Téléchargez votre vidéo stabilisée
-   - Générez une comparaison et téléchargez-la
+## 1 — Importation
 
-## Structure du projet
+- Charger une **vidéo MP4** ou un **dossier d’images**  
+- Prévisualiser la séquence d’entrée
+
+## 2 — Traitement
+
+Ajuster les paramètres de stabilisation :
+
+- **λ (Lambda)** — facteur de régularisation (défaut : 0.9)  
+- **ω (Omega)** — paramètre de recouvrement (défaut : 0.7)  
+- **σ (Sigma)** — paramètre de lissage (défaut : 0.1)  
+
+Puis cliquer sur **Start Processing**.
+
+## 3 — Exportation
+
+- Exporter la vidéo stabilisée  
+- Générer éventuellement une **vidéo de comparaison**
+
+---
+
+# Structure du projet
 
 ```
-Tonal Stabilizer/
-├── pyproject.toml          # Configuration du projet
-├── requirements.txt        # Dépendances Python
-├── README.md              # Ce fichier
-├── stabilizer/
+Tonal-Stabilizer
+│
+├── pyproject.toml
+├── README.md
+│
+├── stabilizer
 │   ├── __init__.py
-│   ├── mainwindow.py      # Interface utilisateur principale
-│   ├── frameloader.py     # Gestion des vidéos et images
-│   ├── tonalprocessor.py  # Moteur de traitement tonal
-│   └── formator.py        # Génération de comparaisons
-├── test_stabilizer/       # Tests (à développer)
-└── data/
-    ├── Images_graycard/   # Images de test
-    └── Images_weirdhouse/ # Images de test
+│   ├── mainwindow.py
+│   ├── frameloader.py
+│   ├── tonalprocessor.py
+│   └── formator.py
+│
+└── data
 ```
 
-## Développement
+---
 
-### Installer en mode développeur
+# Dépendances principales
 
-```bash
-pip install -e ".[dev]"
-```
+- **PySide6** — framework GUI  
+- **OpenCV** — traitement vidéo et images  
+- **NumPy** — calculs numériques  
 
-Cela installe également les outils de développement : `pytest`, `black`, `flake8`.
+---
 
-### Exécuter les tests
+# Auteurs
 
-```bash
-pytest
-```
+Paolo Cheype  
+Louis Dorlencourt
 
-### Formater le code
-
-```bash
-black stabilizer/
-```
-
-### Vérifier la qualité du code
-
-```bash
-flake8 stabilizer/
-```
-
-## Dépendances principales
-
-- **PySide6** : Framework GUI
-- **OpenCV** : Traitement vidéo et images
-- **NumPy** : Calculs numériques
-
-## Auteurs
-
-Paolo Cheype, Louis Dorlencourt
-
-## Licence
-
-MIT
-
-## Notes
-
-- Les vidéos sont traitées et stockées temporairement en mémoire RAM
-- Assurez-vous d'avoir suffisamment d'espace mémoire pour les vidéos longues
-- Les formats MP4 convertis utilisent le codec `mp4v` pour une meilleure compatibilité
+---

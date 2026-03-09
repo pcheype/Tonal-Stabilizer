@@ -9,7 +9,7 @@ from PySide6.QtCore import QTimer
 from frameloader import VideoManager
 from tonalprocessor import TonalProcessor
 from formator import FormatorProcessor
-import os, platform, subprocess
+import os, platform
 
 class MainWindow(QMainWindow):
 
@@ -154,6 +154,7 @@ class MainWindow(QMainWindow):
         self.comb_path = None
 
     def set_button_style(self, button):
+        """Definition du style du boutton (pour eviter les redondances de codes)"""
         button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Expanding)
         button.setMinimumHeight(40)
         font = QFont()
@@ -204,7 +205,8 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Attention", "Aucune vidéo n'est disponible pour la visualisation.")
   
     def start_style_progress(self):
-        """Lance une fake progression"""
+        """Lance une fake progression (juste pour le style dans l'étape 1, les autres barres
+        de progression sont vraies)"""
         self.progress_load.setValue(0)
         self.timer_step = 0
         self.total_steps = 20 
@@ -214,6 +216,7 @@ class MainWindow(QMainWindow):
         self.progress_timer.start(40) 
 
     def update_progress(self):
+        """Fonciton pour update une barre de progression"""
         self.timer_step += 1
         percentage = int((self.timer_step / self.total_steps) * 100)
         self.progress_load.setValue(percentage)
@@ -222,6 +225,7 @@ class MainWindow(QMainWindow):
             self.progress_timer.stop()
 
     def start_processing(self):
+        """Lancement de la stabilisation"""
         video_input = self.current_video_path
         lambda0 = self.lambda_spin.value()
         sigma = self.sigma_spin.value()
@@ -233,6 +237,7 @@ class MainWindow(QMainWindow):
         self.download_button.setEnabled(True)
         
     def on_processing_finished(self, success, message):
+        """Methode pour afficher un message une fois, le TI effectué"""
         if success:
             self.download_button.setEnabled(True) 
             QMessageBox.information(self, "Succès", "Calcul terminé ! Vous pouvez maintenant télécharger la vidéo.")
@@ -240,6 +245,7 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(self, "Erreur", message)
 
     def download_video(self):
+        """Permet de télécharger la video stabilisée"""
         save_path, _ = QFileDialog.getSaveFileName(self, "Enregistrer la vidéo", "stabilized_video.mp4", "Video (*.mp4)")
         self.stab_path = save_path
         
@@ -264,12 +270,14 @@ class MainWindow(QMainWindow):
   
 
     def on_compare_clicked(self):
+        """Action pour le bouton 'Comparer votre video'"""
         self.compare_worker = FormatorProcessor(self.current_video_path,self.stab_path)
         self.compare_worker.progress_update.connect(self.progress_comp.setValue)
         self.compare_worker.finished_signal.connect(self.on_compare_finished)
         self.compare_worker.start()
 
     def on_compare_finished(self, success, message):
+        """Annonce la fin de la comparaison"""
         if success:
             QMessageBox.information(self, "Calcul terminé", "La comparaison est prête. Cliquez sur Télécharger.")
             self.downloadcomp_button.setEnabled(True) # On active le bouton de sauvegarde
@@ -277,6 +285,7 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(self, "Erreur", message)
 
     def downvisu(self):
+        """Méthode pour télécharger ET visualiser la video de comparaison"""
 
         save_path, _ = QFileDialog.getSaveFileName(self, "Enregistrer la vidéo", "stabilized_video.mp4", "Video (*.mp4)")
         self.comp_path = save_path

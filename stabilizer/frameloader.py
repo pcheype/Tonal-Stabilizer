@@ -1,7 +1,9 @@
 import cv2
-import os
 from pathlib import Path
-from PySide6.QtWidgets import QFileDialog, QMessageBox
+from PySide6.QtWidgets import QFileDialog
+
+#Classe permettant d'acceder au dossier d'images, de creer un mp4 à partir du dossier. 
+#Permet egalement à partir d'un mp4 d'avoir l'emsemble des frames.
 
 class VideoManager:
     
@@ -10,7 +12,7 @@ class VideoManager:
         self.supported_formats = (".png", ".jpg", ".jpeg", ".bmp", ".tif")
 
     def get_path_from_dialog(self, mode="folder"):
-        """Centralise les demandes de sélection de fichiers/dossiers via PySide6."""
+        """Centralise les demandes de sélection de fichiers/dossiers."""
         if mode == "folder":
             return QFileDialog.getExistingDirectory(self.parent, "Sélectionner le dossier d'images")
         elif mode == "video":
@@ -22,7 +24,7 @@ class VideoManager:
         return None
 
     def images_to_video(self, input_folder, output_path, fps=30):
-        """Convertit un dossier d'images en vidéo MP4 de manière optimisée."""
+        """Convertit un dossier d'images en vidéo MP4 de manière."""
         folder_path = Path(input_folder)
         files = sorted([f for f in folder_path.iterdir() if f.suffix.lower() in self.supported_formats])
 
@@ -53,7 +55,7 @@ class VideoManager:
             writer.release()
 
     def process_existing_video(self, input_path, output_path):
-        """Permet de traiter ou simplement copier/renommer une vidéo existante."""
+        """Permet de traiter une vidéo existante."""
         cap = cv2.VideoCapture(input_path)
         fps = cap.get(cv2.CAP_PROP_FPS)
         w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
